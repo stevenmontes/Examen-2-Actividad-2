@@ -16,22 +16,26 @@ public class Main {
 		boolean salir = false;
 		int opcion;
 
-		mostrarMetodosEncriptacion();
-		opcion = solicitarOpcion();
-		EncryptionType encrypt = validarTipoEncription(opcion);
+		controller.initializeEncryptMethod(fijarMetodoEncriptacion());
 
 		while (!salir) {
 			mostrarMenuPrincipal();
 			opcion = solicitarOpcion();
-			salir = leerOpcion(opcion, encrypt);
+			salir = leerOpcion(opcion);
 		}
 	}
 
-	private static void mostrarMenuPrincipal() {
-		System.out.println("1.Create key");
-		System.out.println("2.Encript Message");
-		System.out.println("3.Decrypt Message");
-		System.out.println("4.Exit ");
+	private static EncryptionType fijarMetodoEncriptacion() throws IOException {
+		int opcion;
+		EncryptionType encrypt;
+
+		do {
+			mostrarMetodosEncriptacion();
+			opcion = solicitarOpcion();
+			encrypt = validarTipoEncription(opcion);
+		} while (opcion != 1 && opcion != 2);
+
+		return encrypt;
 	}
 
 	private static EncryptionType validarTipoEncription(int opcion) {
@@ -42,28 +46,33 @@ public class Main {
 		}
 	}
 
-	private static boolean leerOpcion(int opcion, EncryptionType encrypt) throws Exception {
+	private static void mostrarMenuPrincipal() {
+		System.out.println("1.Create key");
+		System.out.println("2.Encript Message");
+		System.out.println("3.Decrypt Message");
+		System.out.println("4.Exit ");
+	}
+
+	private static boolean leerOpcion(int opcion) throws Exception {
+		String keyName;
+		String messageName;
+		String message;
+		
 		switch (opcion) {
 		case 1:
-			System.out.println("Key name: ");
-			String name = leer.readLine();
-			controller.createKey(name, encrypt);
+			keyName = solicitarInformacion("Key name: ");
+			controller.createKey(keyName);
 			break;
 		case 2:
-			System.out.println("Key name: ");
-			String name1 = leer.readLine();
-			System.out.println("Message name: ");
-			String messageName = leer.readLine();
-			System.out.println("Message: ");
-			String message = leer.readLine();
-			controller.encryptMessage(messageName,message,name1, encrypt);
+			keyName = solicitarInformacion("Key name: ");
+			messageName = solicitarInformacion("Message name: ");
+			message = solicitarInformacion("Message: ");
+			controller.encryptMessage(messageName, message, keyName);
 			break;
 		case 3:
-			System.out.println("Key name: ");
-			String keyName = leer.readLine();
-			System.out.println("Message name: ");
-			String messageName1 = leer.readLine();
-			controller.decryptMessage(messageName1, keyName, encrypt);
+			keyName = solicitarInformacion("Key name: ");
+			messageName = solicitarInformacion("Message name: ");
+			controller.decryptMessage(messageName, keyName);
 			break;
 		case 4:
 			return true;
@@ -71,6 +80,11 @@ public class Main {
 			break;
 		}
 		return false;
+	}
+
+	private static String solicitarInformacion(String message) throws IOException {
+		System.out.println(message);
+		return leer.readLine();
 	}
 
 	private static int solicitarOpcion() throws NumberFormatException, IOException {
@@ -81,7 +95,6 @@ public class Main {
 	private static void mostrarMetodosEncriptacion() {
 		System.out.println("1. AES.");
 		System.out.println("2. RSA.");
-		System.out.println("3. Exit.");
 	}
 
 }
