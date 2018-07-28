@@ -45,6 +45,16 @@ public class EncryptManagerToRSATest {
 		eliminarArchivo(keyPrivate);
 		eliminarArchivo(keyPublic);
 	}
+	
+	@Test(expected = Exception.class)
+	public void testGuardarEncriptacion1() throws Exception {
+		RSA.createKey("test");
+		RSA.encryptMessage("test", "test is the best", "test1");
+		File keyPrivate = new File("C:/encrypt/asymetric/testpublic.key");
+		File keyPublic = new File("C:/encrypt/asymetric/testprivate.key");
+		eliminarArchivo(keyPrivate);
+		eliminarArchivo(keyPublic);
+	}
 
 	@Test
 	public void testDesencriptar() throws Exception {
@@ -56,6 +66,21 @@ public class EncryptManagerToRSATest {
 		String resultadoEsperado = "El mensaje era: \ntest is the best";
 		assertTrue(encript.exists());
 		assertEquals(resultadoEsperado, RSA.decryptMessage("test", "test"));
+		eliminarArchivo(encript);
+		eliminarArchivo(keyPrivate);
+		eliminarArchivo(keyPublic);
+	}
+	
+	@Test(expected = Exception.class)
+	public void testDesencriptar1() throws Exception {
+		RSA.createKey("test");
+		RSA.encryptMessage("test", "test is the best", "test");
+		File encript = new File("C:/encrypt/asymetric/test.encript");
+		File keyPrivate = new File("C:/encrypt/asymetric/testpublic.key");
+		File keyPublic = new File("C:/encrypt/asymetric/testprivate.key");
+		String resultadoEsperado = "El mensaje era: \ntest is the best";
+		assertTrue(encript.exists());
+		assertEquals(resultadoEsperado, RSA.decryptMessage("test", "test1"));
 		eliminarArchivo(encript);
 		eliminarArchivo(keyPrivate);
 		eliminarArchivo(keyPublic);

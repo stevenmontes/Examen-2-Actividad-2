@@ -41,6 +41,17 @@ public class EncryptManagerToAESTest {
 		eliminarArchivo(encript);
 		eliminarArchivo(key);
 	}
+	
+	@Test(expected = Exception.class)
+	public void testGuardarEncriptacion1() throws Exception {
+		AES.createKey("test");
+		AES.encryptMessage("test", "test is the best", "test2");
+		File encript = new File("C:/encrypt/symetric/test.encript");
+		File key = new File("C:/encrypt/symetric/test.key");
+		assertTrue(encript.exists());
+		eliminarArchivo(encript);
+		eliminarArchivo(key);
+	}
 
 	private void eliminarArchivo(File key) {
 		key.delete();
@@ -55,6 +66,19 @@ public class EncryptManagerToAESTest {
 		String resultadoEsperado = "El mensaje era: \ntest is the best";
 		assertTrue(encript.exists());
 		assertEquals(resultadoEsperado, AES.decryptMessage("test", "test"));
+		eliminarArchivo(encript);
+		eliminarArchivo(key);
+	}
+	
+	@Test(expected = Exception.class)
+	public void testDesencriptar1() throws Exception {
+		AES.createKey("test");
+		AES.encryptMessage("test", "test is the best", "test");
+		File encript = new File("C:/encrypt/symetric/test.encript");
+		File key = new File("C:/encrypt/symetric/test.key");
+		String resultadoEsperado = "El mensaje era: \ntest is the best";
+		assertTrue(encript.exists());
+		assertEquals(resultadoEsperado, AES.decryptMessage("test", "test1"));
 		eliminarArchivo(encript);
 		eliminarArchivo(key);
 	}
