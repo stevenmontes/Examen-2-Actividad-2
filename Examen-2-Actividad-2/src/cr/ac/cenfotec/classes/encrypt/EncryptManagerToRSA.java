@@ -2,16 +2,13 @@ package cr.ac.cenfotec.classes.encrypt;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -20,18 +17,12 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
-import java.util.Base64;
-import java.util.Base64.Decoder;
-import java.util.Base64.Encoder;
-
 import javax.crypto.Cipher;
 
-public class EncryptManagerToRSA implements EncryptManager {
+public class EncryptManagerToRSA extends EncryptManager {
 
-	private final String KEY_EXTENSION = ".key";
 	private final String PUBLIC = "public";
 	private final String PRIVATE = "private";
-	private final String MESSAGE_ENCRYPT_EXTENSION = ".encript";
 	private final String PATH = "C:/encrypt/asymetric/";
 
 	@Override
@@ -50,24 +41,18 @@ public class EncryptManagerToRSA implements EncryptManager {
 	@Override
 	public void encryptMessage(String messageName, String message, String keyName) throws Exception {
 		PublicKey pubKey = (PublicKey) readKeyFromFile(keyName, PUBLIC);
-		Cipher cipher = Cipher.getInstance("RSA");
+		Cipher cipher = initializeCipher("RSA");
 		cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-		byte[] encryptedData = cipher.doFinal(message.getBytes(StandardCharsets.UTF_8));
-		Encoder oneEncoder = Base64.getEncoder();
-		encryptedData = oneEncoder.encode(encryptedData);
-		writeBytesFile(messageName, encryptedData, MESSAGE_ENCRYPT_EXTENSION);
+		saveEncryptMessage(messageName, message, cipher);
 	}
 	
 	@Override
 	public void decryptMessage(String messageName, String keyName) throws Exception {
 		PrivateKey privKey = (PrivateKey) readKeyFromFile(keyName, PRIVATE);
-		Cipher cipher = Cipher.getInstance("RSA");
+		Cipher cipher = initializeCipher("RSA");
 		cipher.init(Cipher.DECRYPT_MODE, privKey);
 		byte[] encryptedMessage = readMessageFile(messageName);
-		byte[] decryptedData = cipher.doFinal(encryptedMessage);
-		String message = new String(decryptedData, StandardCharsets.UTF_8);
-		System.out.println("El mensaje era: ");
-		System.out.println(message);
+		showMessage(cipher, encryptedMessage);
 	}
 
 	private void saveToFile(String fileName, BigInteger mod, BigInteger exp) throws IOException {
@@ -80,12 +65,6 @@ public class EncryptManagerToRSA implements EncryptManager {
 		} finally {
 			oout.close();
 		}
-	}
-	
-	private void writeBytesFile(String name, byte[] content, String type) throws FileNotFoundException, IOException {
-		FileOutputStream fos = new FileOutputStream(PATH + name + type);
-		fos.write(content);
-		fos.close();
 	}
 
 	private Key readKeyFromFile(String keyFileName, String type) throws IOException {
@@ -112,16 +91,8 @@ public class EncryptManagerToRSA implements EncryptManager {
 		}
 	}
 
-	private byte[] readMessageFile(String messageName) throws Exception {
-		File file = new File(PATH + messageName + MESSAGE_ENCRYPT_EXTENSION);
-		int length = (int) file.length();
-		BufferedInputStream reader = new BufferedInputStream(new FileInputStream(file));
-		byte[] bytes = new byte[length];
-		reader.read(bytes, 0, length);
-		reader.close();
-		Decoder oneDecoder = Base64.getDecoder();
-		return oneDecoder.decode(bytes);
-
+	@Override
+	public String getPATH() {
+		return PATH;
 	}
-
 }
