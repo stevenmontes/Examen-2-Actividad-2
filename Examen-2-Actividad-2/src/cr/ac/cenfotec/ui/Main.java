@@ -33,7 +33,7 @@ public class Main {
 			mostrarMetodosEncriptacion();
 			opcion = solicitarOpcion();
 			encrypt = validarTipoEncription(opcion);
-		} while (opcion != 1 && opcion != 2);
+		} while (opcion != 1 && opcion != 2 && opcion != 3);
 
 		return encrypt;
 	}
@@ -41,8 +41,10 @@ public class Main {
 	private static EncryptionType validarTipoEncription(int opcion) {
 		if (opcion == 1) {
 			return EncryptionType.AES;
-		} else {
+		} else if(opcion == 2){
 			return EncryptionType.RSA;
+		} else {
+			return EncryptionType.DES;
 		}
 	}
 
@@ -95,6 +97,7 @@ public class Main {
 	private static void mostrarMetodosEncriptacion() {
 		System.out.println("1. AES.");
 		System.out.println("2. RSA.");
+		System.out.println("3. DES.");
 	}
 
 }

@@ -10,6 +10,8 @@ public class EncryptManagerFactory {
 			return new EncryptManagerToAES();
 		case RSA:
 			return new EncryptManagerToRSA();
+		case DES:
+			return new EncryptManagerToDES();
 		default:
 			return null;
 		}
