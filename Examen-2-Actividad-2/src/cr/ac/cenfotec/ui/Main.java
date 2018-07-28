@@ -74,7 +74,7 @@ public class Main {
 		case 3:
 			keyName = solicitarInformacion("Key name: ");
 			messageName = solicitarInformacion("Message name: ");
-			controller.decryptMessage(messageName, keyName);
+			System.out.println(controller.decryptMessage(messageName, keyName));
 			break;
 		case 4:
 			return true;

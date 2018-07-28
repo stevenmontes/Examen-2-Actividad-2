@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
@@ -24,12 +25,13 @@ public abstract class EncryptManager {
 
 	public abstract void encryptMessage(String messageName, String message, String keyName) throws Exception;
 
-	public abstract void decryptMessage(String messageName, String keyName) throws Exception;
+	public abstract String decryptMessage(String messageName, String keyName) throws Exception;
 
 	public abstract String getPATH();
 	
-	public Cipher initializeCipher(String instance) throws Exception, NoSuchPaddingException {
+	public Cipher initializeCipher(String instance, int mode, Key k) throws Exception, NoSuchPaddingException {
 		Cipher cipher = Cipher.getInstance(instance);
+		cipher.init(mode, k);
 		return cipher;
 	}
 
@@ -59,11 +61,11 @@ public abstract class EncryptManager {
 		writeBytesFile(messageName, encryptedData, MESSAGE_ENCRYPT_EXTENSION);
 	}
 	
-	public void showMessage(Cipher cipher, byte[] encryptedMessage)
+	public String showMessage(Cipher cipher, byte[] encryptedMessage)
 			throws IllegalBlockSizeException, BadPaddingException {
 		byte[] decryptedData = cipher.doFinal(encryptedMessage);
 		String message = new String(decryptedData, StandardCharsets.UTF_8);
-		System.out.println("El mensaje era: \n" + message);
+		return "El mensaje era: \n" + message;
 	}
 
 }

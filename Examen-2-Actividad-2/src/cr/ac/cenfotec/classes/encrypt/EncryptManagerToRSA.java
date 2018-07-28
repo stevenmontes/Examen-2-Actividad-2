@@ -41,18 +41,16 @@ public class EncryptManagerToRSA extends EncryptManager {
 	@Override
 	public void encryptMessage(String messageName, String message, String keyName) throws Exception {
 		PublicKey pubKey = (PublicKey) readKeyFromFile(keyName, PUBLIC);
-		Cipher cipher = initializeCipher("RSA");
-		cipher.init(Cipher.ENCRYPT_MODE, pubKey);
+		Cipher cipher = initializeCipher("RSA", Cipher.ENCRYPT_MODE, pubKey);
 		saveEncryptMessage(messageName, message, cipher);
 	}
 	
 	@Override
-	public void decryptMessage(String messageName, String keyName) throws Exception {
+	public String decryptMessage(String messageName, String keyName) throws Exception {
 		PrivateKey privKey = (PrivateKey) readKeyFromFile(keyName, PRIVATE);
-		Cipher cipher = initializeCipher("RSA");
-		cipher.init(Cipher.DECRYPT_MODE, privKey);
+		Cipher cipher = initializeCipher("RSA", Cipher.DECRYPT_MODE, privKey);
 		byte[] encryptedMessage = readMessageFile(messageName);
-		showMessage(cipher, encryptedMessage);
+		return showMessage(cipher, encryptedMessage);
 	}
 
 	private void saveToFile(String fileName, BigInteger mod, BigInteger exp) throws IOException {

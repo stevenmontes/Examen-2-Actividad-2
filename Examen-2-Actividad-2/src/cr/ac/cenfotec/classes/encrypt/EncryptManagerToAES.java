@@ -22,20 +22,18 @@ public class EncryptManagerToAES extends EncryptManager {
 	@Override
 	public void encryptMessage(String messageName, String message, String keyName) throws Exception {
 		byte[] key = readKeyFile(keyName);
-		Cipher cipher = initializeCipher("AES");
 		SecretKeySpec k = new SecretKeySpec(key, "AES");
-		cipher.init(Cipher.ENCRYPT_MODE, k);
+		Cipher cipher = initializeCipher("AES", Cipher.ENCRYPT_MODE, k);
 		saveEncryptMessage(messageName, message, cipher);
 	}
 
 	@Override
-	public void decryptMessage(String messageName, String keyName) throws Exception {
+	public String decryptMessage(String messageName, String keyName) throws Exception {
 		byte[] key = readKeyFile(keyName);
 		byte[] encryptedMessage = readMessageFile(messageName);
-		Cipher cipher = initializeCipher("AES");
 		SecretKeySpec k = new SecretKeySpec(key, "AES");
-		cipher.init(Cipher.DECRYPT_MODE, k);
-		showMessage(cipher, encryptedMessage);
+		Cipher cipher = initializeCipher("AES", Cipher.DECRYPT_MODE, k);
+		return showMessage(cipher, encryptedMessage);
 	}
 
 	private byte[] readKeyFile(String keyName) throws FileNotFoundException, IOException {

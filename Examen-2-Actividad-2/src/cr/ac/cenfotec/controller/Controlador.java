@@ -20,7 +20,7 @@ public class Controlador {
 		manager.encryptMessage(messageName, message, name);
 	}
 	
-	public void decryptMessage(String messageName, String keyName) throws Exception {
-		manager.decryptMessage(messageName, keyName);
+	public String decryptMessage(String messageName, String keyName) throws Exception {
+		return manager.decryptMessage(messageName, keyName);
 	}
 }
